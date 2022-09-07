@@ -33,6 +33,22 @@ app.get('/employees/:id', (req, res, next)=>{
             res.status(400).json({"error":err.message})
             return
         }
+        if(row == undefined){
+            res.status(400).json({"error":"id user non defini"})
+            return
+        }
         res.status(200).json(row)
+    })
+})
+
+//Demande d'information sur le total des employées
+app.get("/employees", (req, res, next)=>{
+    let selectAll = "SELECT * FROM employees"
+    db.all(selectAll, [], (err, rows)=>{
+        if(err){
+            res.status(400).json({"error":err.message})
+            return
+        }
+        res.status(200).json({rows})
     })
 })
