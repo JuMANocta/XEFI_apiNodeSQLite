@@ -1,0 +1,22 @@
+{
+  "name": "apinodesqlite",
+  "version": "0.0.1",
+  "description": "Une application REST",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "express",
+    "sqlite",
+    "node",
+    "js"
+  ],
+  "author": "JuMan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "sqlite3": "^5.0.11"
+  }
+}
