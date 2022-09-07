@@ -23,3 +23,16 @@ let db = new sqlite3.Database('./model/bdd.db', (err)=>{
     }
     console.log("La BDD est disponible")
 })
+
+//Demande d'information sur id d'employée
+app.get('/employees/:id', (req, res, next)=>{
+    let params = [req.params.id]
+    let select = "SELECT * FROM employees WHERE employee_id = ?"
+    db.get(select, params, (err, row)=>{
+        if(err){
+            res.status(400).json({"error":err.message})
+            return
+        }
+        res.status(200).json(row)
+    })
+})
