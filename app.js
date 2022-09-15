@@ -65,7 +65,6 @@ app.post("/employees/", (req, res, next)=>{
             res.status(400).json({"error":err.message})
             return
         }
-        console.log(retour)
         res.status(200).json({"employee_id":this.lastID})
     })
 })
