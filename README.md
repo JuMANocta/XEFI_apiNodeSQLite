@@ -7,6 +7,7 @@ Lancer les commandes suivantes pour compléter le projet
 git clone http://...
 npm install sqlite3
 npm install express
+npm install winston
 ```
 
 ![NodeJS](https://nodejs.org/static/images/logo.svg)

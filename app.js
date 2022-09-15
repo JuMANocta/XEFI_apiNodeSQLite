@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3')
 const express = require('express')
+const logger = require('./logger.js')
 let app = express()
 
 const HTTP_PORT = "8000"
@@ -7,6 +8,7 @@ const HTTP_PORT = "8000"
 //Démarage du serveur HTTP
 app.listen(HTTP_PORT, ()=>{
     console.log("Serveur en route sur le port " + HTTP_PORT)
+    logger.log({level : 'info', message : "Serveur démarré sur le port " + HTTP_PORT})
 })
 
 //Création de la BDD et insertion de 3 lignes
@@ -25,7 +27,8 @@ let db = new sqlite3.Database('./model/bdd.db', (err)=>{
 })
 
 //Demande d'information sur id d'employée
-app.get('/employees/:id', (req, res, next)=>{
+app.get('/getInfoEmployee/:id', (req, res, next)=>{
+    console.log("Demande de récupération d'informations sur un employée")
     let params = [req.params.id]
     let select = "SELECT * FROM employees WHERE employee_id = ?"
     db.get(select, params, (err, row)=>{
@@ -37,6 +40,7 @@ app.get('/employees/:id', (req, res, next)=>{
             res.status(400).json({"error":"id user non defini"})
             return
         }
+        console.log("Demande de récupération d'informations")
         res.status(200).json(row)
     })
 })
