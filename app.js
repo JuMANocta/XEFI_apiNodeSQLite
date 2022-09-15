@@ -80,31 +80,41 @@ app.post("/addEmployees/", (req, res, next)=>{
 })
 
 //Demande de mise à jour
-app.patch("/employees/", (req, res, next) => {
+app.patch("/updateEmployees/", (req, res, next) => {
     var reqBody = req.body;
     db.run(`UPDATE employees set last_name = ?, first_name = ?, title = ?, address = ?, country_code = ? WHERE employee_id = ?`,
         [reqBody.last_name, reqBody.first_name, reqBody.title, reqBody.address, reqBody.country_code, reqBody.employee_id],
         function (err) {
             if (err) {
+                logger.log({level : 'error', message : res.message})
                 res.status(400).json({ "error": res.message })
                 return;
             }
+            logger.log({level : 'info', message : 'Modification d\'un employée avec l\'id : '} + this.changes)
             res.status(200).json({ updatedID: this.changes });
         });
 });
 //Demande de suppression
-app.delete("/employees/:id", (req, res, next) => {
+app.delete("/deleteEmployees/:id", (req, res, next) => {
     db.run(`DELETE FROM user WHERE id = ?`,
         req.params.id,
         function (err, result) {
             if (err) {
+                logger.log({level : 'error', message : res.message})
                 res.status(400).json({ "error": res.message })
                 return;
             }
+            logger.log({level : 'info', message : 'Suppression d\'un employée avec l\'id' + this.changes})
             res.status(200).json({ deletedID: this.changes })
         });
 });
 
+// Gestion de l'index de notre site
+app.get("/", (req,res)=>{
+    res.send('Hello World')
+})
+// Récupération des URL fausses --> 302
 app.get("*", (req,res)=>{
+    // redirection vers notre page index
     res.redirect('/')
 })
