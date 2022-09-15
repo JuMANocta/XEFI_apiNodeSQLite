@@ -5,6 +5,10 @@ let app = express()
 
 const HTTP_PORT = "8000"
 
+app.use(express.static('views'))
+app.use(express.json())
+app.use(express.urlencoded({extended:false}))
+
 //Démarage du serveur HTTP
 app.listen(HTTP_PORT, ()=>{
     console.log("Serveur en route sur le port " + HTTP_PORT)
@@ -62,8 +66,6 @@ app.get("/getFullEmployees", (req, res, next)=>{
 })
 
 //Insertion d'un nouvel employees
-app.use(express.json())
-app.use(express.urlencoded({extended:false}))
 app.post("/addEmployee/", (req, res, next)=>{
     let reqBody = req.body
     reqBody = [reqBody.last_name, reqBody.first_name, reqBody.title, reqBody.cp]
@@ -111,7 +113,7 @@ app.delete("/deleteEmployees/:id", (req, res, next) => {
 
 // Gestion de l'index de notre site
 app.get("/", (req,res)=>{
-    res.send('<h1>Api Employées</h1>')
+    res.send('index.html')
 })
 // Récupération des URL fausses --> 302
 app.get("*", (req,res)=>{
