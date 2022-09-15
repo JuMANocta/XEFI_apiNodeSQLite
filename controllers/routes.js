@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express.Router();
 const logger = require('./logger')
-const sqlite3 = require('sqlite3')
 const db = require('./db')
 const html_tablify = require('html-tablify')
 
