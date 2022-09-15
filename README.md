@@ -8,6 +8,7 @@ git clone http://...
 npm install sqlite3
 npm install express
 npm install winston
+npm install html-tablify
 ```
 
 ![NodeJS](https://nodejs.org/static/images/logo.svg)
