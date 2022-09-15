@@ -27,19 +27,22 @@ let db = new sqlite3.Database('./model/bdd.db', (err)=>{
 
 //Demande d'information sur id d'employée
 app.get('/getInfoEmployee/:id', (req, res, next)=>{
-    console.log("Demande de récupération d'informations sur un employée")
     let params = [req.params.id]
+    logger.log({level : 'info', message : 'récupération d\'informations sur l\'employée ' + params})
     let select = "SELECT * FROM employees WHERE employee_id = ?"
     db.get(select, params, (err, row)=>{
         if(err){
-            res.status(400).json({"error":err.message})
+            logger.log({level : 'error', message : err.message})
+            res.status(400).json({'error' : err.message})
             return
         }
         if(row == undefined){
-            res.status(400).json({"error":"id user non defini"})
+            logger.log({level : 'error', message : 'id user non defini'})
+            res.status(400).json({'error' : 'id user non defini'})
             return
         }
         console.log("Demande de récupération d'informations")
+        logger.log({level : 'info', message : 'Récupération réussie'})
         res.status(200).json(row)
     })
 })
