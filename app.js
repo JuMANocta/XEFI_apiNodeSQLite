@@ -15,10 +15,10 @@ app.listen(HTTP_PORT, ()=>{
 let db = new sqlite3.Database('./model/bdd.db', (err)=>{
     if(err){
         console.error("J'ai pas pu ouvrir la BDD " + err.message)
-        logger.log({level : 'error', message : 'BDD indisponible' })
+        logger.log({level : 'error', message : err.message })
     }else{
-        db.run('CREATE TABLE employees(employee_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, last_name NVARCHAR(20) NOT NULL, first_name NVARCHAR(20) NOT NULL, title NVARCHAR(20), cp INTEGER(5))', ()=>{
-            logger.log({level : 'info', message : 'Création de la BDD'})
+        db.run('CREATE TABLE employees(employee_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, last_name NVARCHAR(20) NOT NULL, first_name NVARCHAR(20) NOT NULL, title NVARCHAR(20), cp INTEGER(5))', (err)=>{
+            logger.log({level : 'warm', message : err.message})
         })
     }
     console.log("La BDD est disponible")
@@ -64,7 +64,7 @@ app.get("/getFullEmployees", (req, res, next)=>{
 //Insertion d'un nouvel employees
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
-app.post("/addEmployees/", (req, res, next)=>{
+app.post("/addEmployee/", (req, res, next)=>{
     let reqBody = req.body
     reqBody = [reqBody.last_name, reqBody.first_name, reqBody.title, reqBody.cp]
     let insert = "INSERT INTO employees (last_name, first_name, title, cp) VALUES (?,?,?,?)"
@@ -82,16 +82,16 @@ app.post("/addEmployees/", (req, res, next)=>{
 //Demande de mise à jour
 app.patch("/updateEmployees/", (req, res, next) => {
     var reqBody = req.body;
-    db.run(`UPDATE employees set last_name = ?, first_name = ?, title = ?, address = ?, country_code = ? WHERE employee_id = ?`,
-        [reqBody.last_name, reqBody.first_name, reqBody.title, reqBody.address, reqBody.country_code, reqBody.employee_id],
+    db.run("UPDATE employees set last_name = ?, first_name = ?, title = ?, cfgsdgp = ? WHERE employee_id = ?",
+        [reqBody.last_name, reqBody.first_name, reqBody.title, reqBody.country_code, reqBody.employee_id],
         function (err) {
             if (err) {
-                logger.log({level : 'error', message : res.message})
-                res.status(400).json({ "error": res.message })
+                logger.log({level : 'error', message : err.message})
+                res.status(400).json({ "error": err.message })
                 return;
             }
-            logger.log({level : 'info', message : 'Modification d\'un employée avec l\'id : '} + this.changes)
-            res.status(200).json({ updatedID: this.changes });
+            logger.log({level : 'info', message : 'Modification d\'un employée : ' + this.changes} )
+            res.status(200).json({ verification: this.changes });
         });
 });
 //Demande de suppression
@@ -104,14 +104,14 @@ app.delete("/deleteEmployees/:id", (req, res, next) => {
                 res.status(400).json({ "error": res.message })
                 return;
             }
-            logger.log({level : 'info', message : 'Suppression d\'un employée avec l\'id' + this.changes})
-            res.status(200).json({ deletedID: this.changes })
+            logger.log({level : 'info', message : 'Suppression d\'un employée : ' + this.changes})
+            res.status(200).json({ deletedVerif: this.changes })
         });
 });
 
 // Gestion de l'index de notre site
 app.get("/", (req,res)=>{
-    res.send('Hello World')
+    res.send('<h1>Api Employées</h1>')
 })
 // Récupération des URL fausses --> 302
 app.get("*", (req,res)=>{
