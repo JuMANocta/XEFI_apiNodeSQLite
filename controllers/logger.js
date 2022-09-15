@@ -20,4 +20,5 @@ const logger = createLogger({
 })
 console.log("Loggeur disponible")
 logger.log({level : 'info', message : 'Loggeur disponible'})
+
 module.exports = logger
