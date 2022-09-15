@@ -48,13 +48,15 @@ app.get('/getInfoEmployee/:id', (req, res, next)=>{
 })
 
 //Demande d'information sur le total des employées
-app.get("/employees", (req, res, next)=>{
+app.get("/getFullEmployees", (req, res, next)=>{
     let selectAll = "SELECT * FROM employees"
     db.all(selectAll, [], (err, rows)=>{
         if(err){
+            logger.log({level : 'error', message : err.message})
             res.status(400).json({"error":err.message})
             return
         }
+        logger.log({level : 'info', message : 'Récupération réussie'})
         res.status(200).json({rows})
     })
 })
@@ -62,21 +64,19 @@ app.get("/employees", (req, res, next)=>{
 //Insertion d'un nouvel employees
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
-app.post("/employees/", (req, res, next)=>{
+app.post("/addEmployees/", (req, res, next)=>{
     let reqBody = req.body
     reqBody = [reqBody.last_name, reqBody.first_name, reqBody.title, reqBody.cp]
     let insert = "INSERT INTO employees (last_name, first_name, title, cp) VALUES (?,?,?,?)"
     db.run(insert, reqBody, function(err){
         if(err){
+            logger.log({level : 'info', message : 'Ajout d\'un employée'})
             res.status(400).json({"error":err.message})
             return
         }
+        logger.log({level : 'info', message : 'Ajout d\'un employée avec l\'id :' + this.lastID})
         res.status(200).json({"employee_id":this.lastID})
     })
-})
-
-app.get("/test", (req,res,next)=>{
-    res.redirect("back")
 })
 
 //Demande de mise à jour
@@ -104,3 +104,7 @@ app.delete("/employees/:id", (req, res, next) => {
             res.status(200).json({ deletedID: this.changes })
         });
 });
+
+app.get("*", (req,res)=>{
+    res.redirect('/')
+})
